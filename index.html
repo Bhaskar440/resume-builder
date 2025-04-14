@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        /* Global Styles */
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Card Styles */
+        .card {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border: none;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            background-color: #fff;
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        /* Form Styles */
+        .form-control:focus {
+            border-color: #2c3e50;
+            box-shadow: 0 0 0 0.2rem rgba(44, 62, 80, 0.25);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: #2c3e50;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            background-color: #2c3e50;
+            border-color: #2c3e50;
+        }
+
+        .btn-primary:hover {
+            background-color: #34495e;
+            border-color: #34495e;
+        }
+
+        .btn-success {
+            background-color: #27ae60;
+            border-color: #27ae60;
+        }
+
+        .btn-success:hover {
+            background-color: #2ecc71;
+            border-color: #2ecc71;
+        }
+
+        /* Template Card Styles */
+        .template-card {
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .template-card img {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .template-card:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Navigation Styles */
+        .navbar {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background-color: #fff !important;
+            border-top: 1px solid #dee2e6;
+        }
+
+        /* Modal Styles */
+        .modal-content {
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            border-bottom: 2px solid #f0f2f5;
+        }
+
+        /* Feature Box Styles */
+        .feature-box {
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        .feature-box:hover {
+            transform: translateY(-5px);
+        }
+
+        /* Resume Template Styles */
+        .resume-template {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .resume-header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #2c3e50;
+            padding-bottom: 20px;
+        }
+
+        .resume-name {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin: 0;
+        }
+
+        .resume-contact-info {
+            margin-top: 10px;
+            color: #7f8c8d;
+        }
+
+        .resume-section {
+            margin-bottom: 25px;
+        }
+
+        .resume-section-title {
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+
+        .resume-summary {
+            text-align: justify;
+        }
+
+        .resume-experience-item, .resume-education-item {
+            margin-bottom: 20px;
+        }
+
+        .resume-company-name, .resume-school-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .resume-position-title, .resume-degree {
+            color: #34495e;
+        }
+
+        .resume-dates {
+            color: #7f8c8d;
+            font-style: italic;
+        }
+
+        .resume-skills-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .resume-skill-item {
+            background-color: #f0f2f5;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.9em;
+        }
+
+        @media print {
+            body {
+                padding: 0;
+                margin: 40px;
+            }
+
+            .resume-skill-item {
+                border: 1px solid #ddd;
+            }
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Animation Styles */
+        .fade-enter {
+            opacity: 0;
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transition: opacity 300ms ease-in;
+        }
+
+        /* Form Validation Styles */
+        .was-validated .form-control:valid {
+            border-color: #28a745;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%2328a745' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+        }
+
+        .was-validated .form-control:invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23dc3545' viewBox='-2 -2 7 7'%3e%3cpath stroke='%23dc3545' d='M0 0l3 3m0-3L0 3'/%3e%3ccircle r='.5'/%3e%3ccircle cx='3' r='.5'/%3e%3ccircle cy='3' r='.5'/%3e%3ccircle cx='3' cy='3' r='.5'/%3e%3c/svg%3E");
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #2c3e50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Hide sections by default */
+        #templates-section, #builder-section, #preview-section {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#" id="home-link">Resume Builder</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="home-nav-link">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="templates-nav-link">Templates</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mt-4">
+        <!-- Home Section -->
+        <div id="home-section">
+            <div class="text-center py-5">
+                <h1 class="display-4 mb-4">Create Your Professional Resume</h1>
+                <p class="lead mb-4">Build a stunning resume in minutes with our easy-to-use builder and professional templates.</p>
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <h5 class="card-title">Why Choose Our Resume Builder?</h5>
+                                <div class="row mt-4">
+                                    <div class="col-md-4">
+                                        <div class="feature-box">
+                                            <i class="fas fa-paint-brush mb-3 fa-2x text-primary"></i>
+                                            <h6>Professional Templates</h6>
+                                            <p>Choose from our collection of carefully designed templates.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="feature-box">
+                                            <i class="fas fa-magic mb-3 fa-2x text-primary"></i>
+                                            <h6>Easy to Use</h6>
+                                            <p>Simple and intuitive interface for the best user experience.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="feature-box">
+                                            <i class="fas fa-download mb-3 fa-2x text-primary"></i>
+                                            <h6>Multiple Formats</h6>
+                                            <p>Download your resume in PDF or HTML format.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a href="#" class="btn btn-primary btn-lg" id="get-started-btn">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Templates Section -->
+        <div id="templates-section">
+            <div class="container py-4">
+                <h2 class="text-center mb-4">Choose Your Resume Template</h2>
+                <div class="row">
+                    <!-- Template 1 -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="https://via.placeholder.com/600x400?text=Professional+Template" class="card-img-top" alt="Professional Template">
+                            <div class="card-body">
+                                <h5 class="card-title">Professional</h5>
+                                <p class="card-text">A clean and modern template perfect for any professional field.</p>
+                                <a href="#" class="btn btn-primary template-btn" data-template="1">Use This Template</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Template 2 -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="https://via.placeholder.com/600x400?text=Creative+Template" class="card-img-top" alt="Creative Template">
+                            <div class="card-body">
+                                <h5 class="card-title">Creative</h5>
+                                <p class="card-text">Stand out with this creative design, perfect for designers and artists.</p>
+                                <a href="#" class="btn btn-primary template-btn" data-template="2">Use This Template</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Template 3 -->
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="https://via.placeholder.com/600x400?text=Executive+Template" class="card-img-top" alt="Executive Template">
+                            <div class="card-body">
+                                <h5 class="card-title">Executive</h5>
+                                <p class="card-text">A sophisticated template for senior positions and executive roles.</p>
+                                <a href="#" class="btn btn-primary template-btn" data-template="3">Use This Template</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Builder Section -->
+        <div id="builder-section">
+            <div class="container py-4">
+                <h2 class="text-center mb-4">Build Your Resume</h2>
+                <div class="row">
+                    <div class="col-md-8 mx-auto">
+                        <form id="resumeForm" class="needs-validation" novalidate>
+                            <!-- Personal Information -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Personal Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="firstName" class="form-label">First Name</label>
+                                            <input type="text" class="form-control" id="firstName" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="lastName" class="form-label">Last Name</label>
+                                            <input type="text" class="form-control" id="lastName" required>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="phone" class="form-label">Phone</label>
+                                        <input type="tel" class="form-control" id="phone" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="location" class="form-label">Location</label>
+                                        <input type="text" class="form-control" id="location" placeholder="City, Country" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Professional Summary -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Professional Summary</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="summary" class="form-label">Summary</label>
+                                        <textarea class="form-control" id="summary" rows="4" required></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Experience -->
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Work Experience</h5>
+                                    <button type="button" class="btn btn-sm btn-primary" id="addExperience">Add Experience</button>
+                                </div>
+                                <div class="card-body" id="experienceContainer">
+                                    <div class="experience-entry mb-3">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Company</label>
+                                                <input type="text" class="form-control" name="company[]" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Position</label>
+                                                <input type="text" class="form-control" name="position[]" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Start Date</label>
+                                                <input type="month" class="form-control" name="startDate[]" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">End Date</label>
+                                                <input type="month" class="form-control" name="endDate[]">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" name="description[]" rows="3" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Education -->
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Education</h5>
+                                    <button type="button" class="btn btn-sm btn-primary" id="addEducation">Add Education</button>
+                                </div>
+                                <div class="card-body" id="educationContainer">
+                                    <div class="education-entry mb-3">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">School</label>
+                                                <input type="text" class="form-control" name="school[]" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Degree</label>
+                                                <input type="text" class="form-control" name="degree[]" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">Start Date</label>
+                                                <input type="month" class="form-control" name="eduStartDate[]" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label class="form-label">End Date</label>
+                                                <input type="month" class="form-control" name="eduEndDate[]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skills -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5 class="mb-0">Skills</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="skills" class="form-label">Skills (comma-separated)</label>
+                                        <input type="text" class="form-control" id="skills" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-4">
+                                <button type="button" class="btn btn-primary me-2" id="previewBtn">Preview</button>
+                                <button type="button" class="btn btn-success me-2" id="downloadPdfBtn">Download PDF</button>
+                                <button type="button" class="btn btn-secondary" id="downloadHtmlBtn">Download HTML</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preview Section -->
+        <div id="preview-section">
+            <div class="container py-4">
+                <h2 class="text-center mb-4">Resume Preview</h2>
+                <div class="text-center mb-3">
+                    <button type="button" class="btn btn-primary me-2" id="backToBuilderBtn">Back to Builder</button>
+                    <button type="button" class="btn btn-success me-2" id="downloadPdfPreviewBtn">Download PDF</button>
+                    <button type="button" class="btn btn-secondary" id="downloadHtmlPreviewBtn">Download HTML</button>
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <div id="resume-preview" class="resume-template">
+                            <!-- Resume content will be inserted here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer mt-5 py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">© 2024 Resume Builder. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Navigation
+            const homeSection = document.getElementById('home-section');
+            const templatesSection = document.getElementById('templates-section');
+            const builderSection = document.getElementById('builder-section');
+            const previewSection = document.getElementById('preview-section');
+            
+            const homeLink = document.getElementById('home-link');
+            const homeNavLink = document.getElementById('home-nav-link');
+            const templatesNavLink = document.getElementById('templates-nav-link');
+            const getStartedBtn = document.getElementById('get-started-btn');
+            
+            // Show home section by default
+            homeSection.style.display = 'block';
+            
+            // Navigation event listeners
+            homeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(homeSection);
+            });
+            
+            homeNavLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(homeSection);
+            });
+            
+            templatesNavLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(templatesSection);
+            });
+            
+            getStartedBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showSection(templatesSection);
+            });
+            
+            // Template selection
+            const templateButtons = document.querySelectorAll('.template-btn');
+            let selectedTemplate = 1; // Default template
+            
+            templateButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    selectedTemplate = this.getAttribute('data-template');
+                    showSection(builderSection);
+                });
+            });
+            
+            // Add Experience Entry
+            document.getElementById('addExperience').addEventListener('click', function() {
+                const container = document.getElementById('experienceContainer');
+                const entry = container.querySelector('.experience-entry').cloneNode(true);
+                entry.querySelectorAll('input, textarea').forEach(input => input.value = '');
+                container.appendChild(entry);
+            });
+
+            // Add Education Entry
+            document.getElementById('addEducation').addEventListener('click', function() {
+                const container = document.getElementById('educationContainer');
+                const entry = container.querySelector('.education-entry').cloneNode(true);
+                entry.querySelectorAll('input').forEach(input => input.value = '');
+                container.appendChild(entry);
+            });
+
+            // Preview Button
+            document.getElementById('previewBtn').addEventListener('click', function() {
+                const resumeData = collectFormData();
+                generateResumePreview(resumeData, selectedTemplate);
+                showSection(previewSection);
+            });
+            
+            // Back to Builder Button
+            document.getElementById('backToBuilderBtn').addEventListener('click', function() {
+                showSection(builderSection);
+            });
+
+            // Download PDF Button (from builder)
+            document.getElementById('downloadPdfBtn').addEventListener('click', function() {
+                const resumeData = collectFormData();
+                generateResumePreview(resumeData, selectedTemplate);
+                downloadResume('pdf');
+            });
+
+            // Download HTML Button (from builder)
+            document.getElementById('downloadHtmlBtn').addEventListener('click', function() {
+                const resumeData = collectFormData();
+                generateResumePreview(resumeData, selectedTemplate);
+                downloadResume('html');
+            });
+            
+            // Download PDF Button (from preview)
+            document.getElementById('downloadPdfPreviewBtn').addEventListener('click', function() {
+                downloadResume('pdf');
+            });
+
+            // Download HTML Button (from preview)
+            document.getElementById('downloadHtmlPreviewBtn').addEventListener('click', function() {
+                downloadResume('html');
+            });
+
+            function showSection(section) {
+                // Hide all sections
+                homeSection.style.display = 'none';
+                templatesSection.style.display = 'none';
+                builderSection.style.display = 'none';
+                previewSection.style.display = 'none';
+                
+                // Show the selected section
+                section.style.display = 'block';
+            }
+
+            function collectFormData() {
+                return {
+                    personal: {
+                        firstName: document.getElementById('firstName').value,
+                        lastName: document.getElementById('lastName').value,
+                        email: document.getElementById('email').value,
+                        phone: document.getElementById('phone').value,
+                        location: document.getElementById('location').value,
+                        summary: document.getElementById('summary').value
+                    },
+                    experience: Array.from(document.querySelectorAll('.experience-entry')).map(entry => ({
+                        company: entry.querySelector('[name="company[]"]').value,
+                        position: entry.querySelector('[name="position[]"]').value,
+                        startDate: entry.querySelector('[name="startDate[]"]').value,
+                        endDate: entry.querySelector('[name="endDate[]"]').value,
+                        description: entry.querySelector('[name="description[]"]').value
+                    })),
+                    education: Array.from(document.querySelectorAll('.education-entry')).map(entry => ({
+                        school: entry.querySelector('[name="school[]"]').value,
+                        degree: entry.querySelector('[name="degree[]"]').value,
+                        startDate: entry.querySelector('[name="eduStartDate[]"]').value,
+                        endDate: entry.querySelector('[name="eduEndDate[]"]').value
+                    })),
+                    skills: document.getElementById('skills').value.split(',').map(skill => skill.trim())
+                };
+            }
+
+            function generateResumePreview(resumeData, templateId) {
+                const previewContainer = document.getElementById('resume-preview');
+                
+                // Clear previous content
+                previewContainer.innerHTML = '';
+                
+                // Create resume HTML based on template
+                let resumeHtml = '';
+                
+                if (templateId == 1) {
+                    // Professional Template
+                    resumeHtml = `
+                        <div class="resume-header">
+                            <h1 class="resume-name">${resumeData.personal.firstName} ${resumeData.personal.lastName}</h1>
+                            <div class="resume-contact-info">
+                                ${resumeData.personal.email} | ${resumeData.personal.phone} | ${resumeData.personal.location}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Professional Summary</h2>
+                            <div class="resume-summary">
+                                ${resumeData.personal.summary}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Work Experience</h2>
+                            ${resumeData.experience.map(exp => `
+                                <div class="resume-experience-item">
+                                    <div class="resume-company-name">${exp.company}</div>
+                                    <div class="resume-position-title">${exp.position}</div>
+                                    <div class="resume-dates">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                                    <p>${exp.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Education</h2>
+                            ${resumeData.education.map(edu => `
+                                <div class="resume-education-item">
+                                    <div class="resume-school-name">${edu.school}</div>
+                                    <div class="resume-degree">${edu.degree}</div>
+                                    <div class="resume-dates">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Skills</h2>
+                            <ul class="resume-skills-list">
+                                ${resumeData.skills.map(skill => `
+                                    <li class="resume-skill-item">${skill}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else if (templateId == 2) {
+                    // Creative Template
+                    resumeHtml = `
+                        <div class="resume-header" style="background-color: #3498db; color: white; padding: 20px; border-radius: 5px;">
+                            <h1 class="resume-name" style="color: white;">${resumeData.personal.firstName} ${resumeData.personal.lastName}</h1>
+                            <div class="resume-contact-info" style="color: rgba(255,255,255,0.8);">
+                                ${resumeData.personal.email} | ${resumeData.personal.phone} | ${resumeData.personal.location}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title" style="color: #3498db;">Professional Summary</h2>
+                            <div class="resume-summary">
+                                ${resumeData.personal.summary}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title" style="color: #3498db;">Work Experience</h2>
+                            ${resumeData.experience.map(exp => `
+                                <div class="resume-experience-item">
+                                    <div class="resume-company-name">${exp.company}</div>
+                                    <div class="resume-position-title">${exp.position}</div>
+                                    <div class="resume-dates">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                                    <p>${exp.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title" style="color: #3498db;">Education</h2>
+                            ${resumeData.education.map(edu => `
+                                <div class="resume-education-item">
+                                    <div class="resume-school-name">${edu.school}</div>
+                                    <div class="resume-degree">${edu.degree}</div>
+                                    <div class="resume-dates">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title" style="color: #3498db;">Skills</h2>
+                            <ul class="resume-skills-list">
+                                ${resumeData.skills.map(skill => `
+                                    <li class="resume-skill-item" style="background-color: #3498db; color: white;">${skill}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                } else {
+                    // Executive Template
+                    resumeHtml = `
+                        <div class="resume-header" style="border-left: 5px solid #2c3e50; padding-left: 20px;">
+                            <h1 class="resume-name">${resumeData.personal.firstName} ${resumeData.personal.lastName}</h1>
+                            <div class="resume-contact-info">
+                                ${resumeData.personal.email} | ${resumeData.personal.phone} | ${resumeData.personal.location}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Professional Summary</h2>
+                            <div class="resume-summary">
+                                ${resumeData.personal.summary}
+                            </div>
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Work Experience</h2>
+                            ${resumeData.experience.map(exp => `
+                                <div class="resume-experience-item">
+                                    <div class="resume-company-name">${exp.company}</div>
+                                    <div class="resume-position-title">${exp.position}</div>
+                                    <div class="resume-dates">${exp.startDate} - ${exp.endDate || 'Present'}</div>
+                                    <p>${exp.description}</p>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Education</h2>
+                            ${resumeData.education.map(edu => `
+                                <div class="resume-education-item">
+                                    <div class="resume-school-name">${edu.school}</div>
+                                    <div class="resume-degree">${edu.degree}</div>
+                                    <div class="resume-dates">${edu.startDate} - ${edu.endDate || 'Present'}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">Skills</h2>
+                            <ul class="resume-skills-list">
+                                ${resumeData.skills.map(skill => `
+                                    <li class="resume-skill-item" style="border: 1px solid #2c3e50;">${skill}</li>
+                                `).join('')}
+                            </ul>
+                        </div>
+                    `;
+                }
+                
+                // Set the resume HTML
+                previewContainer.innerHTML = resumeHtml;
+            }
+
+            function downloadResume(format) {
+                const resumePreview = document.getElementById('resume-preview');
+                
+                if (format === 'pdf') {
+                    // Use html2pdf.js to generate PDF
+                    const options = {
+                        margin: 10,
+                        filename: 'resume.pdf',
+                        image: { type: 'jpeg', quality: 0.98 },
+                        html2canvas: { scale: 2 },
+                        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                    };
+                    
+                    html2pdf().set(options).from(resumePreview).save();
+                } else if (format === 'html') {
+                    // Create a downloadable HTML file
+                    const htmlContent = `
+                        <!DOCTYPE html>
+                        <html>
+                        <head>
+                            <meta charset="UTF-8">
+                            <title>Resume</title>
+                            <style>
+                                ${document.querySelector('style').innerHTML}
+                            </style>
+                        </head>
+                        <body>
+                            ${resumePreview.innerHTML}
+                        </body>
+                        </html>
+                    `;
+                    
+                    const blob = new Blob([htmlContent], { type: 'text/html' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'resume.html';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }
+            }
+        });
+    </script>
+</body>
+</html> 
